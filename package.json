@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/express": "^4.0.39",
+    "express": "^4.16.2",
     "pet-business": "^1.0.2",
     "pet-entity": "^1.0.7"
   }
