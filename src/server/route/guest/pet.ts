@@ -24,13 +24,13 @@ class PetRouter {
     // Takes all methods and attaches them to end points.
     private routes () : void {
       this.router.get('/', this.list.bind(this));
-      this.router.get('/:id', this.retrieve.bind(this));
+      this.router.get('/:petId', this.retrieve.bind(this));
     }
 
     private retrieve (req: Request, res: Response, next: NextFunction) : void {
 			// Retrieve pet owner's info.
-			if (!req.param('id')) return res.status(422).end();
-      let id: any = req.param('id');
+			if (!req.param('petId')) return res.status(422).end();
+      let id: any = req.param('petId');
 
       this.petDb.retrieve(id)
       .then((pet: Pet) => res.status(200).json(pet.toObject()))
