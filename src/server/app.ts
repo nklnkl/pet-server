@@ -54,18 +54,19 @@ class App {
           res.status(200).end();
       });
       let adminRouter: AdminRouter = new AdminRouter(this.dbClient.getConnection());
-      this.express.use('/admin', this.isAdmin, adminRouter.getRouter());
+      this.express.use('/admin', this.isAdmin.bind(this), adminRouter.getRouter());
 
       let customerRouter: CustomerRouter = new CustomerRouter(this.dbClient.getConnection());
-      this.express.use('/customer', this.isCustomer, customerRouter.getRouter());
+      this.express.use('/customer', this.isCustomer.bind(this), customerRouter.getRouter());
 
       let guestRouter: GuestRouter = new GuestRouter(this.dbClient.getConnection());
       this.express.use('/guest', guestRouter.getRouter());
 
-      this.express.use(this.error);
+      this.express.use(this.error.bind(this));
     }
 
-    private error (err: express.Errback, req: express.Request , res: express.Response, next: express.NextFunction) : void {
+    private error (err: Error, req: express.Request , res: express.Response, next: express.NextFunction) : void {
+      console.log(err);
       res.status(500).json(err);
       return;
     }

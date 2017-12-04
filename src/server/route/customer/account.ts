@@ -35,7 +35,7 @@ class AccountRouter {
       this.accountDb.retrieve(id)
       .then((account: Account) => {
         account.setPassword('');
-        res.json(account).end();
+        return res.json(account.toObject()).end();
       })
       .catch((err: Error) => next(err));
     }
