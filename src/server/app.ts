@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import * as Dotenv from 'dotenv';
 
 import { Client as DbClient } from 'pet-db';
 
