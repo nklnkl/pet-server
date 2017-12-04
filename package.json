@@ -1,6 +1,6 @@
 {
   "name": "pet-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,11 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/dotenv": "^4.0.2",
     "@types/express": "^4.0.39",
     "@types/morgan": "^1.7.35",
+    "dotenv": "^4.0.0",
     "express": "^4.16.2",
     "morgan": "^1.9.0",
-    "pet-business": "^1.0.2",
-    "pet-entity": "^1.0.7"
+    "pet-business": "^1.0.8",
+    "pet-db": "^1.0.6",
+    "pet-entity": "^1.1.1"
   }
 }
