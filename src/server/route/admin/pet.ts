@@ -23,20 +23,20 @@ class PetRouter {
 
     // Takes all methods and attaches them to end points.
     private routes () : void {
-      this.router.post('/', this.create.bind(this));
+      this.router.patch('/', this.update.bind(this));
     }
 
-    private create (req: Request, res: Response, next: NextFunction) : void {
-      // 1. Check data needed.
-			if (!req.body.species) res.status(422).end();
-      if (!req.body.breed) res.status(422).end();
-      if (!req.body.birthDate) res.status(422).end();
-      if (!req.body.name) res.status(422).end();
-      if (!req.body.status) res.status(422).end();
+    private update (req: Request, res: Response, next: NextFunction) : void {
+			// Retrieve pet owner's info.
+			if (!req.get('id')) res.status(422).end();
+      let id: any = req.get('id');
 
-			PetService.create(req.body.species, req.body.breed, req.body.birthDate, req.body.name, req.body.status)
-      .then((pet: Pet) => this.petDb.create(pet))
-			.then((pet: Pet) => res.status(200).end())
+      let update: Pet = new Pet(req.body);
+
+      this.petDb.retrieve(id)
+      .then((pet: Pet) => PetService.update(pet, update))
+      .then((pet: Pet) => this.petDb.update(id, pet))
+      .then((pet: Pet) => res.status(200).end())
       .catch((err: Error) => next(err));
     }
 }

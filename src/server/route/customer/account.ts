@@ -13,8 +13,8 @@ class AccountRouter {
 
     constructor (dbConnection: Connection) {
       this.router = Router();
-      this.routes();
       this.accountDb = new AccountDb(dbConnection);
+      this.routes();
     }
 
     public getRouter () : Router {
@@ -23,20 +23,8 @@ class AccountRouter {
 
     // Takes all methods and attaches them to end points.
     private routes () : void {
-      this.router.post('/', this.create.bind(this));
       this.router.get('/', this.retrieve.bind(this));
       this.router.patch('/', this.update.bind(this));
-    }
-
-    private create (req: Request, res: Response, next: NextFunction) : void {
-      // 1. Check data needed.
-			if (!req.body.email) res.status(422).end();
-      if (!req.body.password) res.status(422).end();
-
-			AccountService.create(req.body.email, req.body.password, 1)
-      .then((account: Account) => this.accountDb.create(account))
-			.then((account: Account) => res.json( {id: account.getId()} ))
-      .catch((err: Error) => next(err));
     }
 
     private retrieve (req: Request, res: Response, next: NextFunction) : void {
