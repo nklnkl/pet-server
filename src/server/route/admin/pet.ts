@@ -28,7 +28,7 @@ class PetRouter {
 
     private update (req: Request, res: Response, next: NextFunction) : void {
 			// Retrieve pet owner's info.
-			if (!req.get('id')) res.status(422).end();
+			if (!req.get('id')) return res.status(422).end();
       let id: any = req.get('id');
 
       let update: Pet = new Pet(req.body);

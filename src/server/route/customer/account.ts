@@ -29,7 +29,7 @@ class AccountRouter {
 
     private retrieve (req: Request, res: Response, next: NextFunction) : void {
 			// Retrieve account owner's info.
-			if (!req.get('id')) res.status(422).end();
+			if (!req.get('id')) return res.status(422).end();
       let id: any = req.get('id');
 
       this.accountDb.retrieve(id)
@@ -42,7 +42,7 @@ class AccountRouter {
 
     private update (req: Request, res: Response, next: NextFunction) : void {
 			// Retrieve account owner's info.
-			if (!req.get('id')) res.status(400).end();
+			if (!req.get('id')) return res.status(400).end();
       let id: any = req.get('id');
 
       let update: Account = new Account(req.body);

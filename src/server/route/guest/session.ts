@@ -30,8 +30,8 @@ class SessionRouter {
 
     private create (req: Request, res: Response, next: NextFunction) : void {
 			// Retrieve account owner's info.
-			if (!req.body.email) res.status(422).end();
-      if (!req.body.password) res.status(422).end();
+			if (!req.body.email) return res.status(422).end();
+      if (!req.body.password) return res.status(422).end();
 
       let email: any = req.body.email;
       let password: any = req.body.password;

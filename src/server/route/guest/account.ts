@@ -28,8 +28,8 @@ class AccountRouter {
 
     private create (req: Request, res: Response, next: NextFunction) : void {
       // 1. Check data needed.
-			if (!req.body.email) res.status(422).end();
-      if (!req.body.password) res.status(422).end();
+			if (!req.body.email) return res.status(422).end();
+      if (!req.body.password) return res.status(422).end();
 
 			AccountService.create(req.body.email, req.body.password, 1)
       .then((account: Account) => this.accountDb.create(account))

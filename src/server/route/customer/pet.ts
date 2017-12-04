@@ -28,11 +28,11 @@ class PetRouter {
 
     private create (req: Request, res: Response, next: NextFunction) : void {
       // 1. Check data needed.
-			if (!req.body.species) res.status(422).end();
-      if (!req.body.breed) res.status(422).end();
-      if (!req.body.birthDate) res.status(422).end();
-      if (!req.body.name) res.status(422).end();
-      if (!req.body.status) res.status(422).end();
+			if (!req.body.species) return res.status(422).end();
+      if (!req.body.breed) return res.status(422).end();
+      if (!req.body.birthDate) return res.status(422).end();
+      if (!req.body.name) return res.status(422).end();
+      if (!req.body.status) return res.status(422).end();
 
 			PetService.create(req.body.species, req.body.breed, req.body.birthDate, req.body.name, req.body.status)
       .then((pet: Pet) => this.petDb.create(pet))
