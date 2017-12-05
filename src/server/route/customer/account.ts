@@ -45,11 +45,18 @@ class AccountRouter {
 			if (!req.get('userId')) return res.status(400).end();
       let id: any = req.get('userId');
 
-      let update: Account = new Account(req.body);
+      // Constraints
+      let update: any = {
+        email: req.body.email,
+        password: req.body.password,
+        name: req.body.name,
+        birthDate: req.body.birthDate,
+        address: req.body.address
+      };
 
       this.accountDb.retrieve(id)
       .then((account: Account) => AccountService.update(account, update))
-      .then((account: Account) => this.accountDb.update(id, account))
+      .then((update: Account) => this.accountDb.update(id, update))
       .then((account: Account) => res.status(200).end())
       .catch((err: Error) => next(err));
     }
