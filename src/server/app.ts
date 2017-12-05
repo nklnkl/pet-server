@@ -78,12 +78,12 @@ class App {
       let userId: any = req.get('userId');
       this.sessionDb.retrieve(sessionId)
       .then((session: Session) => {
-        if (!session || session.getUserId() != userId)
+        if (session.getUserId() != userId)
           throw new Error('session not found');
         return this.accountDb.retrieve(userId);
       })
       .then((account: Account) => {
-        if (!account || account.getLevel() != 2)
+        if (account.getLevel() != 2)
           throw new Error('user not admin')
         next();
       })
@@ -97,7 +97,7 @@ class App {
       let userId: any = req.get('userId');
       this.sessionDb.retrieve(sessionId)
       .then((session: Session) => {
-        if (!session || session.getUserId() != userId)
+        if (session.getUserId() != userId)
           throw new Error('session not found');
         next();
       })
