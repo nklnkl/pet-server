@@ -29,8 +29,8 @@ class PetRouter {
 
     private retrieve (req: Request, res: Response, next: NextFunction) : void {
 			// Retrieve pet owner's info.
-			if (!req.param('petId')) return res.status(422).end();
-      let id: any = req.param('petId');
+			if (!req.params.petId) return res.status(422).end();
+      let id: any = req.params.petId;
 
       this.petDb.retrieve(id)
       .then((pet: Pet) => res.status(200).json(pet.toObject()))
