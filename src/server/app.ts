@@ -68,7 +68,7 @@ class App {
 
     private headers (req: express.Request, res: express.Response, next: express.NextFunction) {
       res.header("Access-Control-Allow-Origin", "*");
-      res.header("Access-Control-Allow-Methods", "*");
+      res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
       res.header("Access-Control-Allow-Headers", "userId, sessionId, Origin, X-Requested-With, Content-Type, Accept");
       next();
     }
