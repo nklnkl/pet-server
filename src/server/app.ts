@@ -65,6 +65,12 @@ class App {
       this.express.use(this.error.bind(this));
     }
 
+    private headers (req: express.Request, res: express.Response, next: express.NextFunction) {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      next();
+    }
+
     private error (err: Error, req: express.Request , res: express.Response, next: express.NextFunction) : void {
       console.log(err);
       res.status(500).json(err);
