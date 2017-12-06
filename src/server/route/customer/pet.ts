@@ -36,7 +36,7 @@ class PetRouter {
 
 			PetService.create(req.body.species, req.body.breed, req.body.birthDate, req.body.name, req.body.status)
       .then((pet: Pet) => this.petDb.create(pet))
-			.then((pet: Pet) => res.status(200).end())
+			.then((pet: Pet) => res.status(200).json({}).end())
       .catch((err: Error) => next(err));
     }
 }

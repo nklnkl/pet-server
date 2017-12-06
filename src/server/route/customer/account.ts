@@ -49,7 +49,7 @@ class AccountRouter {
       this.accountDb.retrieve(req.get('user-id')||'')
       .then((account: Account) => AccountService.update(account, update))
       .then((update: Account) => this.accountDb.update(req.get('user-id')||'', update))
-      .then((account: Account) => res.status(200).end())
+      .then((account: Account) => res.status(200).json({}).end())
       .catch((err: Error) => next(err));
     }
 }

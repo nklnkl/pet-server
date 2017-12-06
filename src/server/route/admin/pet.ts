@@ -36,7 +36,7 @@ class PetRouter {
       this.petDb.retrieve(id)
       .then((pet: Pet) => PetService.update(pet, update))
       .then((pet: Pet) => this.petDb.update(id, pet))
-      .then((pet: Pet) => res.status(200).end())
+      .then((pet: Pet) => res.status(200).json({}).end())
       .catch((err: Error) => next(err));
     }
 }
