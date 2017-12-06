@@ -45,6 +45,7 @@ class App {
     private middleware () : void {
       if (this.logging == true)
         this.express.use(logger('dev'));
+      this.express.use(this.headers.bind(this));
       this.express.use(bodyParser.json());
       this.express.use(bodyParser.urlencoded({ extended: false }));
     }
