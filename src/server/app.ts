@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as express from 'express';
+import * as Cors from 'cors';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as Dotenv from 'dotenv';
@@ -45,9 +46,10 @@ class App {
     private middleware () : void {
       if (this.logging == true)
         this.express.use(logger('dev'));
-      this.express.use(this.headers.bind(this));
+
       this.express.use(bodyParser.json());
       this.express.use(bodyParser.urlencoded({ extended: false }));
+      this.express.use(Cors());
     }
 
     private routes () : void {
@@ -64,14 +66,6 @@ class App {
       this.express.use('/guest', guestRouter.getRouter());
 
       this.express.use(this.error.bind(this));
-    }
-
-    private headers (req: express.Request, res: express.Response, next: express.NextFunction) {
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
-      res.header("Access-Control-Allow-Headers", "user-id, session-id, Origin, X-Requested-With, Content-Type, Accept");
-      res.header("Access-Control-Expose-Headers", "user-id, session-id");
-      next();
     }
 
     private error (err: Error, req: express.Request , res: express.Response, next: express.NextFunction) : void {
