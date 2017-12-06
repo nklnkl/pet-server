@@ -70,7 +70,7 @@ class App {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
       res.header("Access-Control-Allow-Headers", "userId, sessionId, Origin, X-Requested-With, Content-Type, Accept");
-      res.header("Access-Control-Expose-Headers" : "userId, sessionId");
+      res.header("Access-Control-Expose-Headers", "userId, sessionId");
       next();
     }
 
