@@ -44,7 +44,7 @@ class SessionRouter {
       .then((session: Session) => {
         let object: Object = {
           userId: session.getUserId(),
-          sessionId: session.getId()
+          id: session.getId()
         };
         res.status(200).json(object);
       })
