@@ -28,11 +28,7 @@ class AccountRouter {
     }
 
     private retrieve (req: Request, res: Response, next: NextFunction) : void {
-			// Retrieve account owner's info.
-			if (!req.get('userId')) return res.status(422).end();
-      let id: any = req.get('userId');
-
-      this.accountDb.retrieve(id)
+      this.accountDb.retrieve(req.get('user-id')||'')
       .then((account: Account) => {
         account.setPassword('');
         return res.json(account.toObject()).end();
@@ -41,10 +37,6 @@ class AccountRouter {
     }
 
     private update (req: Request, res: Response, next: NextFunction) : void {
-			// Retrieve account owner's info.
-			if (!req.get('userId')) return res.status(400).end();
-      let id: any = req.get('userId');
-
       // Constraints
       let update: any = {
         email: req.body.email,
@@ -54,9 +46,9 @@ class AccountRouter {
         address: req.body.address
       };
 
-      this.accountDb.retrieve(id)
+      this.accountDb.retrieve(req.get('user-id')||'')
       .then((account: Account) => AccountService.update(account, update))
-      .then((update: Account) => this.accountDb.update(id, update))
+      .then((update: Account) => this.accountDb.update(req.get('user-id')||'', update))
       .then((account: Account) => res.status(200).end())
       .catch((err: Error) => next(err));
     }

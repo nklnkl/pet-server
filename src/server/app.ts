@@ -69,8 +69,8 @@ class App {
     private headers (req: express.Request, res: express.Response, next: express.NextFunction) {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
-      res.header("Access-Control-Allow-Headers", "userId, sessionId, Origin, X-Requested-With, Content-Type, Accept");
-      res.header("Access-Control-Expose-Headers", "userId, sessionId");
+      res.header("Access-Control-Allow-Headers", "user-id, session-id, Origin, X-Requested-With, Content-Type, Accept");
+      res.header("Access-Control-Expose-Headers", "user-id, session-id");
       next();
     }
 
@@ -81,10 +81,10 @@ class App {
     }
 
     private isAdmin (req: express.Request, res: express.Response, next: express.NextFunction) : void {
-      if (!req.get('sessionId')) return res.status(406).end();
-      if (!req.get('userId')) return res.status(406).end();
-      let sessionId: any = req.get('sessionId');
-      let userId: any = req.get('userId');
+      if (!req.get('session-id')) return res.status(406).end();
+      if (!req.get('user-id')) return res.status(406).end();
+      let sessionId: any = req.get('session-id');
+      let userId: any = req.get('user-id');
       this.sessionDb.retrieve(sessionId)
       .then((session: Session) => {
         if (session.getUserId() != userId)
@@ -100,10 +100,10 @@ class App {
     }
 
     private isCustomer (req: express.Request, res: express.Response, next: express.NextFunction) : void {
-      if (!req.get('sessionId')) return res.status(406).end();
-      if (!req.get('userId')) return res.status(406).end();
-      let sessionId: any = req.get('sessionId');
-      let userId: any = req.get('userId');
+      if (!req.get('session-id')) return res.status(406).end();
+      if (!req.get('user-id')) return res.status(406).end();
+      let sessionId: any = req.get('session-id');
+      let userId: any = req.get('user-id');
       this.sessionDb.retrieve(sessionId)
       .then((session: Session) => {
         if (session.getUserId() != userId)
