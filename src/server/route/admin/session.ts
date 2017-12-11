@@ -1,5 +1,5 @@
 import { SessionDb, AccountDb } from 'pet-db';
-import { Session, Account } from 'pet-entity';
+import { Session, Account, PetError } from 'pet-entity';
 import { SessionService, AccountService } from 'pet-business';
 
 import { Router, Request, Response, NextFunction } from 'express';

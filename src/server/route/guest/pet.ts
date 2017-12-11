@@ -1,5 +1,5 @@
 import { PetDb } from 'pet-db';
-import { Pet } from 'pet-entity';
+import { Pet, PetError } from 'pet-entity';
 import { PetService } from 'pet-business';
 
 import { Router, Request, Response, NextFunction } from 'express';
@@ -34,7 +34,7 @@ class PetRouter {
 
       this.petDb.retrieve(id)
       .then((pet: Pet) => res.status(200).json(pet.toObject()))
-      .catch((err: Error) => next(err));
+      .catch((err: PetError) => next(err));
     }
 
     private list (req: Request, res: Response, next: NextFunction) : void {
@@ -47,7 +47,7 @@ class PetRouter {
         });
         res.status(200).json(objects);
       })
-      .catch((err: Error) => next(err));
+      .catch((err: PetError) => next(err));
 
     }
 }

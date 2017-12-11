@@ -12,7 +12,7 @@ import { CustomerRouter } from './route/customer/router';
 import { AdminRouter } from './route/admin/router';
 
 import { SessionDb, AccountDb } from 'pet-db';
-import { Session, Account } from 'pet-entity';
+import { Session, Account, PetError } from 'pet-entity';
 
 export { App };
 

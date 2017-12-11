@@ -32,9 +32,30 @@ class AccountRouter {
       if (!req.body.password) return res.status(422).end();
 
 			AccountService.create(req.body.email, req.body.password, 1)
+      .catch((err: number) => {
+        switch(err) {
+          case 0:
+            break;
+          case 1:
+            break;
+          case 2:
+            break;
+          case 3:
+            break;
+        }
+      })
+      .then((account: Account) => this.accountDb.create(account))
+      .catch((err: number) => {})
+      .then((account: Account) => res.json( {account: account.getId()} ))
+      .catch((err: number) => {});
+      /*
+      .then((account: Account) => {})
       .then((account: Account) => this.accountDb.create(account))
 			.then((account: Account) => res.json( {id: account.getId()} ))
-      .catch((err: Error) => next(err));
+      .catch((err: Error) => {
+        next(err);
+      });
+      */
     }
 
 }
