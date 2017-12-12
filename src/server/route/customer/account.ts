@@ -1,5 +1,5 @@
 import { AccountDb } from 'pet-db';
-import { Account, PetError } from 'pet-entity';
+import { Account } from 'pet-entity';
 import { AccountService } from 'pet-business';
 
 import { Router, Request, Response, NextFunction } from 'express';
@@ -33,7 +33,7 @@ class AccountRouter {
         account.setPassword('');
         return res.json(account.toObject()).end();
       })
-      .catch((err: PetError) => next(err));
+      .catch((err: number) => next(err));
     }
 
     private update (req: Request, res: Response, next: NextFunction) : void {
@@ -50,6 +50,6 @@ class AccountRouter {
       .then((account: Account) => AccountService.update(account, update))
       .then((update: Account) => this.accountDb.update(req.get('user-id')||'', update))
       .then((account: Account) => res.status(200).json({}).end())
-      .catch((err: PetError) => next(err));
+      .catch((err: number) => next(err));
     }
 }

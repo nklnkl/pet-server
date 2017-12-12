@@ -1,5 +1,5 @@
 import { PetDb } from 'pet-db';
-import { Pet, PetError } from 'pet-entity';
+import { Pet } from 'pet-entity';
 import { PetService } from 'pet-business';
 
 import { Router, Request, Response, NextFunction } from 'express';
@@ -37,6 +37,6 @@ class PetRouter {
 			PetService.create(req.body.species, req.body.breed, req.body.birthDate, req.body.name, req.body.status)
       .then((pet: Pet) => this.petDb.create(pet))
 			.then((pet: Pet) => res.status(200).json({}).end())
-      .catch((err: PetError) => next(err));
+      .catch((err: number) => next(err));
     }
 }
