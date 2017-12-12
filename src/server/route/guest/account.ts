@@ -26,26 +26,37 @@ class AccountRouter {
       this.router.post('/', this.create.bind(this));
     }
 
-    private create (req: Request, res: Response, next: NextFunction) : void {
+    private async create (req: Request, res: Response, next: NextFunction) : Promise<void> {
       // 1. Check data needed.
 			if (!req.body.email) return res.status(422).end();
       if (!req.body.password) return res.status(422).end();
 
-			AccountService.create(req.body.email, req.body.password, 1)
-      .catch((err: number) => {
-        if (err == 0)
-          next(err);
-        else
-          res.status(422).json({error: err}).end();
-        throw(err);
-      })
-      .then((account: Account) => this.accountDb.create(account))
-      .catch((err: number) => {
-        next(err);
-        throw(err);
-      })
-      .then((account: Account) => res.json( {account: account.getId()} ))
-      .catch((err: number) => {});
-    }
+      let result: any;
 
+      try {
+        result = await AccountService.create(req.body.email, req.body.password, 1)
+      } catch (err) {
+        throw (err);
+      }
+
+      if (typeof result === 'number') {
+        if (result == 0) {
+          next(result);
+          return;
+        }
+        else {
+          res.status(422).json({error: result}).end();
+          return;
+        }
+      }
+
+      try {
+        result = await this.accountDb.create(result)
+      } catch (err) {
+        throw (err);
+      }
+
+      res.status(200).json({}).end();
+      return;
+    }
 }
