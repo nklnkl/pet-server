@@ -27,34 +27,38 @@ class PetRouter {
       this.router.get('/:petId', this.retrieve.bind(this));
     }
 
-    private retrieve (req: Request, res: Response, next: NextFunction) : void {
+    private async retrieve (req: Request, res: Response, next: NextFunction) : Promise<void> {
 			// Retrieve pet owner's info.
 			if (!req.params.petId) return res.status(422).end();
       let id: any = req.params.petId;
+      let pet: number|Pet;
 
-      this.petDb.retrieve(id)
-      .catch((err: number) => {
-        if (err == 0)
-          next(err);
-        else
-          res.status(404).end();
+      try {
+        pet = await this.petDb.retrieve(id);
+      } catch (err) {
+        next(err);
         throw(err);
-      })
-      .then((pet: Pet) => res.status(200).json(pet.toObject()))
-      .catch((err: number) => next(err));
+      }
+      if (typeof pet === 'number')
+        return res.status(404).end();
+
+      return res.status(200).json(pet.toObject()).end();
     }
 
-    private list (req: Request, res: Response, next: NextFunction) : void {
+    private async list (req: Request, res: Response, next: NextFunction) : Promise<void> {
+      let pets: Array<Pet>;
 
-      this.petDb.list()
-      .then((pets: Pet[]) => {
-        let objects: Array<Object> = [];
-        pets.forEach((pet: Pet) => {
-          objects.push(pet.toObject());
-        });
-        res.status(200).json(objects);
-      })
-      .catch((err: number) => next(err));
+      try {
+        pets = await this.petDb.list(req.body.species, req.body.breed);
+      } catch (err) {
+        next(err);
+        throw(err);
+      }
 
+      let objects: Array<Object> = [];
+      pets.forEach((pet: Pet) => {
+        objects.push(pet.toObject());
+      });
+      res.status(200).json(objects);
     }
 }
