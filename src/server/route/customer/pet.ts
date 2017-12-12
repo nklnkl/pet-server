@@ -34,7 +34,9 @@ class PetRouter {
       if (!req.body.name) return res.status(422).end();
       if (!req.body.status) return res.status(422).end();
 
-			PetService.create(req.body.species, req.body.breed, req.body.birthDate, req.body.name, req.body.status)
+      let images: Array<string> = [];
+
+			PetService.create(req.body.species, req.body.breed, req.body.birthDate, req.body.name, req.body.status, images)
       .then((pet: Pet) => this.petDb.create(pet))
 			.then((pet: Pet) => res.status(200).json({}).end())
       .catch((err: number) => next(err));

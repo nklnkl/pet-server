@@ -35,18 +35,41 @@ class SessionRouter {
 
       let email: any = req.body.email;
       let password: any = req.body.password;
+      let acc: Account;
 
+      // Retrieve email.
       this.accountDb.retrieveByEmail(email)
-      .then((account: Account) => AccountService.checkPassword(password, account.getPassword()))
-      .then((match: boolean) => this.accountDb.retrieveByEmail(email))
-      .then((account: Account) => SessionService.create(account.getId()))
+      .catch((err: number) => {
+        if (err == 0) next(err);
+        else res.status(401).end();
+        throw(err);
+      })
+      // Check password
+      .then((account: Account) => {
+        acc = account;
+        return AccountService.checkPassword(password, account.getPassword());
+      })
+      .catch((err: number) => {
+        throw(err);
+      })
+      // Create Session.
+      .then((match: boolean) => {
+        if (!match) {
+          res.status(401).end();
+          throw(acc.getId() + ' password check failed');
+        }
+        else {
+          return SessionService.create(acc.getId());
+        }
+      })
+      // Save session to database.
       .then((session: Session) => this.sessionDb.create(session))
+      .catch((err: number) => {
+        throw(err);
+      })
+      // Response.
       .then((session: Session) => {
-        let object: Object = {
-          userId: session.getUserId(),
-          id: session.getId()
-        };
-        res.status(200).json(object);
+        res.status(200).json(session.toObject());
       })
       .catch((err: number) => next(err));
     }

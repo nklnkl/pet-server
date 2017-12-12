@@ -46,14 +46,6 @@ class AccountRouter {
       })
       .then((account: Account) => res.json( {account: account.getId()} ))
       .catch((err: number) => {});
-      /*
-      .then((account: Account) => {})
-      .then((account: Account) => this.accountDb.create(account))
-			.then((account: Account) => res.json( {id: account.getId()} ))
-      .catch((err: Error) => {
-        next(err);
-      });
-      */
     }
 
 }

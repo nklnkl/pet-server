@@ -12,7 +12,7 @@ import { CustomerRouter } from './route/customer/router';
 import { AdminRouter } from './route/admin/router';
 
 import { SessionDb, AccountDb } from 'pet-db';
-import { Session, Account, PetError } from 'pet-entity';
+import { Session, Account } from 'pet-entity';
 
 export { App };
 
@@ -81,7 +81,7 @@ class App {
       let userId: any = req.get('user-id');
       this.sessionDb.retrieve(sessionId)
       .then((session: Session) => {
-        if (session.getUserId() != userId)
+        if (session.getAccountId() != userId)
           throw new Error('session not found');
         return this.accountDb.retrieve(userId);
       })
@@ -100,7 +100,7 @@ class App {
       let userId: any = req.get('user-id');
       this.sessionDb.retrieve(sessionId)
       .then((session: Session) => {
-        if (session.getUserId() != userId)
+        if (session.getAccountId() != userId)
           throw new Error('session not found');
         next();
       })

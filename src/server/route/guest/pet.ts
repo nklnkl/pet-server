@@ -33,6 +33,13 @@ class PetRouter {
       let id: any = req.params.petId;
 
       this.petDb.retrieve(id)
+      .catch((err: number) => {
+        if (err == 0)
+          next(err);
+        else
+          res.status(404).end();
+        throw(err);
+      })
       .then((pet: Pet) => res.status(200).json(pet.toObject()))
       .catch((err: number) => next(err));
     }

@@ -1,5 +1,5 @@
 import { AccountDb } from 'pet-db';
-import { Account, PetError } from 'pet-entity';
+import { Account } from 'pet-entity';
 import { AccountService } from 'pet-business';
 
 import { Router, Request, Response, NextFunction } from 'express';
