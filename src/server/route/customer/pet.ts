@@ -26,7 +26,7 @@ class PetRouter {
       this.router.post('/', this.create.bind(this));
     }
 
-    private create (req: Request, res: Response, next: NextFunction) : void {
+    private async create (req: Request, res: Response, next: NextFunction) : Promise<void> {
       // 1. Check data needed.
 			if (!req.body.species) return res.status(422).end();
       if (!req.body.breed) return res.status(422).end();
@@ -35,10 +35,25 @@ class PetRouter {
       if (!req.body.status) return res.status(422).end();
 
       let images: Array<string> = [];
+      let pet: Pet|number;
 
-			PetService.create(req.body.species, req.body.breed, req.body.birthDate, req.body.name, req.body.status, images)
-      .then((pet: Pet) => this.petDb.create(pet))
-			.then((pet: Pet) => res.status(200).json({}).end())
-      .catch((err: number) => next(err));
+      try {
+        pet = await PetService.create(req.body.species, req.body.breed, req.body.birthDate, req.body.name, req.body.status, images)
+      } catch (err) {
+        next(err);
+        throw(err);
+      }
+      if (typeof pet === 'number') {
+        return res.status(422).json({err:pet}).end();
+      }
+
+      try {
+        pet = await this.petDb.create(pet);
+      } catch (err) {
+        next(err);
+        throw(err);
+      }
+
+      return res.status(200).json({}).end();
     }
 }

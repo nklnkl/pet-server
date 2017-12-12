@@ -36,13 +36,14 @@ class AccountRouter {
       try {
         result = await AccountService.create(req.body.email, req.body.password, 1)
       } catch (err) {
-        throw (err);
+        next(err);
+        throw(err);
       }
 
       if (typeof result === 'number') {
         if (result == 0) {
           next(result);
-          return;
+          throw(result);
         }
         else {
           res.status(422).json({error: result}).end();
@@ -53,7 +54,8 @@ class AccountRouter {
       try {
         result = await this.accountDb.create(result)
       } catch (err) {
-        throw (err);
+        next(err);
+        throw(err);
       }
 
       res.status(200).json({}).end();

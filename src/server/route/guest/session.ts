@@ -28,49 +28,57 @@ class SessionRouter {
       this.router.post('/', this.create.bind(this));
     }
 
-    private create (req: Request, res: Response, next: NextFunction) : void {
+    private async create (req: Request, res: Response, next: NextFunction) : Promise<void> {
 			// Retrieve account owner's info.
 			if (!req.body.email) return res.status(422).end();
       if (!req.body.password) return res.status(422).end();
 
       let email: any = req.body.email;
       let password: any = req.body.password;
-      let acc: Account;
+      let account: Account | number;
 
-      // Retrieve email.
-      this.accountDb.retrieveByEmail(email)
-      .catch((err: number) => {
-        if (err == 0) next(err);
-        else res.status(401).end();
+      // Try to retrieve email.
+      try {
+        account = await this.accountDb.retrieveByEmail(email);
+      // If error, return early.
+      } catch (err) {
+        next(err);
         throw(err);
-      })
-      // Check password
-      .then((account: Account) => {
-        acc = account;
-        return AccountService.checkPassword(password, account.getPassword());
-      })
-      .catch((err: number) => {
+      }
+      // If not found, return early.
+      if (typeof account === 'number')
+        return res.status(401).end();
+
+      // Check password.
+      let match: boolean;
+      try {
+        match = await AccountService.checkPassword(password, account.getPassword());
+      } catch (err) {
+        next(err);
         throw(err);
-      })
-      // Create Session.
-      .then((match: boolean) => {
-        if (!match) {
-          res.status(401).end();
-          throw(acc.getId() + ' password check failed');
-        }
-        else {
-          return SessionService.create(acc.getId());
-        }
-      })
-      // Save session to database.
-      .then((session: Session) => this.sessionDb.create(session))
-      .catch((err: number) => {
+      }
+      // If not matched, return early.
+      if (!match) {
+        return res.status(401).end();
+      }
+
+      // Try to create session.
+      let session: Session;
+      try {
+        session = await SessionService.create(account.getId());
+      } catch (err) {
+        next(err);
         throw(err);
-      })
-      // Response.
-      .then((session: Session) => {
-        res.status(200).json(session.toObject());
-      })
-      .catch((err: number) => next(err));
+      }
+
+      // Try to save session.
+      try {
+          session = await this.sessionDb.create(session);
+      } catch (err) {
+        next(err);
+        throw(err);
+      }
+
+      return res.status(200).json(session.toObject()).end();
     }
 }

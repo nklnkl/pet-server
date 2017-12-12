@@ -27,18 +27,20 @@ class AccountRouter {
       this.router.patch('/', this.update.bind(this));
     }
 
-    private retrieve (req: Request, res: Response, next: NextFunction) : void {
-      this.accountDb.retrieve(req.get('user-id')||'')
-      .then((account: Account) => {
-        account.setPassword('');
-        return res.json(account.toObject()).end();
-      })
-      .catch((err: number) => {
-        if (err == 0)
-          next(err);
-        else
-          res.status(404).end();
-      });
+    private async retrieve (req: Request, res: Response, next: NextFunction) : Promise<void> {
+      let account: number|Account;
+
+      try {
+        account = await this.accountDb.retrieve(req.get('user-id')||'');
+      } catch (err) {
+        next(err);
+        throw(err);
+      }
+      if (typeof account === 'number')
+        return res.status(404).end();
+
+      account.setPassword('');
+      res.status(200).json(account.toObject()).end();
     }
 
     private async update (req: Request, res: Response, next: NextFunction) : Promise<void> {
@@ -57,7 +59,8 @@ class AccountRouter {
         account = await this.accountDb.retrieve(req.get('account-id')||'');
       }
       catch (err) {
-        return next(err);
+        next(err);
+        throw(err);
       }
 
       // Update account.
@@ -72,7 +75,8 @@ class AccountRouter {
         }
       }
       catch (err) {
-        return next(err);
+        next(err);
+        throw(err);
       }
 
       // Save Update
@@ -80,7 +84,8 @@ class AccountRouter {
         account = await this.accountDb.update(req.get('user-id')||'', update);
       }
       catch (err) {
-        next(account);
+        next(err);
+        throw(err);
       }
 
       res.status(200).json({}).end();

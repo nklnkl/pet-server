@@ -26,17 +26,41 @@ class PetRouter {
       this.router.patch('/', this.update.bind(this));
     }
 
-    private update (req: Request, res: Response, next: NextFunction) : void {
+    private async update (req: Request, res: Response, next: NextFunction) : Promise<void> {
 			// Retrieve pet owner's info.
 			if (!req.param('petId')) return res.status(422).end();
       let id: any = req.param('petId');
 
       let update: Pet = new Pet(req.body);
+      let pet: Pet|number;
 
-      this.petDb.retrieve(id)
-      .then((pet: Pet) => PetService.update(pet, update))
-      .then((pet: Pet) => this.petDb.update(id, pet))
-      .then((pet: Pet) => res.status(200).json({}).end())
-      .catch((err: number) => next(err));
+      try {
+        pet = await this.petDb.retrieve(id);
+      } catch (err) {
+        next(err);
+        throw(err);
+      }
+      if (typeof pet === 'number') {
+        return res.status(404).end();
+      }
+
+      try {
+        pet = await PetService.update(pet, update);
+      } catch (err) {
+        next(err);
+        throw(err);
+      }
+      if (typeof pet === 'number') {
+        return res.status(422).json({err:pet}).end();
+      }
+
+      try {
+        pet = await this.petDb.update(id, pet);
+      } catch (err) {
+        next(err);
+        throw(err);
+      }
+
+      return res.status(200).end();
     }
 }
