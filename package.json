@@ -19,7 +19,7 @@
     "express": "^4.16.2",
     "morgan": "^1.9.0",
     "pet-business": "^1.1.8",
-    "pet-db": "^1.1.6",
+    "pet-db": "^1.1.7",
     "pet-entity": "^1.2.3"
   }
 }

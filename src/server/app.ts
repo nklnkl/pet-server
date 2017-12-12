@@ -74,37 +74,64 @@ class App {
       return;
     }
 
-    private isAdmin (req: express.Request, res: express.Response, next: express.NextFunction) : void {
+    private async isAdmin (req: express.Request, res: express.Response, next: express.NextFunction) : Promise<void> {
       if (!req.get('session-id')) return res.status(406).end();
-      if (!req.get('user-id')) return res.status(406).end();
+      if (!req.get('account-id')) return res.status(406).end();
       let sessionId: any = req.get('session-id');
-      let userId: any = req.get('user-id');
-      this.sessionDb.retrieve(sessionId)
-      .then((session: Session) => {
-        if (session.getAccountId() != userId)
-          throw new Error('session not found');
-        return this.accountDb.retrieve(userId);
-      })
-      .then((account: Account) => {
+      let accountId: any = req.get('account-id');
+      let session: number | Session;
+      let account: number | Account;
+
+      try {
+        session = await this.sessionDb.retrieve(sessionId);
+      } catch (err) {
+        next (err);
+        throw (err);
+      }
+
+      if (typeof session === 'number')
+        return res.status(401).end();
+      else {
+        if (session.getAccountId() != accountId)
+          return res.status(401).end();
+      }
+
+      try {
+        account = await this.accountDb.retrieve(accountId);
+      } catch (err) {
+        next (err);
+        throw (err);
+      }
+
+      if (typeof account === 'number') {
+        return res.status(401).end();
+      } else {
         if (account.getLevel() != 2)
-          throw new Error('user not admin')
-        next();
-      })
-      .catch((err: Error) => next(err));
+          return res.status(403).end();
+      }
     }
 
-    private isCustomer (req: express.Request, res: express.Response, next: express.NextFunction) : void {
+    private async isCustomer (req: express.Request, res: express.Response, next: express.NextFunction) : Promise<void> {
       if (!req.get('session-id')) return res.status(406).end();
-      if (!req.get('user-id')) return res.status(406).end();
+      if (!req.get('account-id')) return res.status(406).end();
       let sessionId: any = req.get('session-id');
-      let userId: any = req.get('user-id');
-      this.sessionDb.retrieve(sessionId)
-      .then((session: Session) => {
-        if (session.getAccountId() != userId)
-          throw new Error('session not found');
-        next();
-      })
-      .catch((err: Error) => next(err));
+      let accountId: any = req.get('account-id');
+      let session: number | Session;
+      let account: number | Account;
+
+      try {
+        session = await this.sessionDb.retrieve(sessionId);
+      } catch (err) {
+        next (err);
+        throw (err);
+      }
+
+      if (typeof session === 'number')
+        return res.status(401).end();
+      else {
+        if (session.getAccountId() != accountId)
+          return res.status(401).end();
+      }
     }
 
     public getExpress () : express.Application {
